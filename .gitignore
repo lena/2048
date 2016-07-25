@@ -1,1 +1,3 @@
-.sass-cache/
+.DS_STORE
+js/.DS_STORE
+style/.DS_STORE

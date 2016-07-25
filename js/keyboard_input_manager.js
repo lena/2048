@@ -71,7 +71,44 @@ KeyboardInputManager.prototype.listen = function () {
   // Respond to button presses
   this.bindButtonPress(".retry-button", this.restart);
   this.bindButtonPress(".restart-button", this.restart);
-  this.bindButtonPress(".keep-playing-button", this.keepPlaying);
+
+  // Respond to tile presses
+  for (var x = 1; x <= 4; x++) {
+    for (var y = 1; y <= 4; y++) {
+      var selector = ".grid-position-" + x + "-" + y
+      var cell = document.querySelector(selector);
+      cell.addEventListener("click", function(e) {
+        position = e.target.className.split("-");
+        e.target.className += " grid-cell-selected";
+        var x = position[3]-1;
+        var y = position[4]-1;
+        var cell = {x: x, y: y}
+        getValue(cell);
+      });
+    }
+  }
+
+  getValue = function(cell) {
+    document.querySelector('.tile-options').style.display = 'block';
+    document.querySelector('.tile-screen').style.display = 'block';
+
+    for (var x = 1; x <= 4; x++) {
+      for (var y = 1; y <= 4; y++) {
+        var selector = ".tile-option-" + x + "-" + y
+        var tile = document.querySelector(selector);
+        tile.addEventListener("click", function(e) {
+          document.querySelector('.tile-options').style.display = 'none';
+          document.querySelector('.tile-screen').style.display = 'none';
+          var value = e.target.innerHTML;
+          if (value == ""){
+            value = null;
+          }
+          data = [cell, value]
+          self.emit("selectTileValue", data);
+        });
+      }
+    }
+  }
 
   // Respond to swipe events
   var touchStartClientX, touchStartClientY;
